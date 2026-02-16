@@ -45,8 +45,13 @@
  );
 
     logic signed [ 0 : BUFFER_DATA_WIDTH - 1 ] mem [ (2 * BUFFER_ADDR_WIDTH) - 1 : 0 ];
-    // logic collision_flag;
-    // logic collision_clear;
+    logic collision_flag;
+    logic data_write_command;
+
+    logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] panic_buffer;
+
+    assign data_write_command = collision_flag;
+
 
 
     always_ff @( posedge clk or negedge rst_n ) begin : write_to_memory
@@ -65,13 +70,11 @@
 
             //exception case. But for safety, we read out first, then write in
             if(wr_en && rd_en) begin
+                collision_flag <= 1'b1;
                 mem[wr_addr] <= wr_data; //written after 2 clk cycle delay
+                collision_flag <= 1'b0;
 
-                // collision_flag <= 1'b1;
-                // if(!collision_clear) begin
-                //     
-                //     collision_flag <= 1'b0;
-                // end
+
             end
         end
 
@@ -101,19 +104,22 @@
 
             //to read data from mem at that address
             if(rd_en) begin
-                rd_data <= mem[rd_addr];
+                rd_data <= panic_buffer;
             end
                 //exception case. But for safety, we read out first, then write in
-            if(wr_en && rd_en) begin
-                // collision_clear <= 1'b1;
-                
-                // collision_clear <= 1'b0;
-                 rd_data <= mem[rd_addr];
-            end
+
         end
 
 
-    end    
+    end
+
+
+    always_ff @(negedge clk or posedge collision_flag) begin
+        if(wr_en && rd_en) begin
+
+            panic_buffer <= mem[rd_addr];
+        end
+    end
 	
  
  
