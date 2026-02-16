@@ -44,6 +44,8 @@
 
  );
 
+    logic [ BUFFER_DATA_WIDTH - 1 : 0 ] mem [ (1 << BUFFER_ADDR_WIDTH) - 1 : 0 ];
+
 
     always_ff @( posedge clk or negedge rst_n ) begin : control_ff
         
@@ -53,7 +55,19 @@
             rd_data = '0;
         end
         else begin
-            //logic to be loaded
+            //to write data to mem at that address
+            if(wr_en) begin
+                mem[wr_addr] = wr_data;
+            end
+            //to read data from mem at that address
+            // if(rd_en) begin
+            //     rd_data = mem[rd_addr];
+            // end
+            // //exception case. But for safety, we read out first, then write in
+            // if(wr_en && rd_en) begin
+            //     rd_data = mem[rd_addr];
+            //     mem[wr_addr] = wr_data;
+            // end
         end
 
 
