@@ -38,40 +38,82 @@
     input logic [ BUFFER_ADDR_WIDTH - 1 : 0 ] rd_addr,
 
 
-    input  logic [ BUFFER_DATA_WIDTH - 1 : 0 ] wr_data,
+    input  logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] wr_data,
 
-    output logic [ BUFFER_DATA_WIDTH - 1 : 0 ] rd_data
+    output logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] rd_data
 
  );
 
-    logic [ BUFFER_DATA_WIDTH - 1 : 0 ] mem [ (1 << BUFFER_ADDR_WIDTH) - 1 : 0 ];
+    logic signed [ 0 : BUFFER_DATA_WIDTH - 1 ] mem [ (2 * BUFFER_ADDR_WIDTH) - 1 : 0 ];
+    // logic collision_flag;
+    // logic collision_clear;
 
 
-    always_ff @( posedge clk or negedge rst_n ) begin : control_ff
+    always_ff @( posedge clk or negedge rst_n ) begin : write_to_memory
         
 
         //async reset, triiger at rst low
         if(!rst_n) begin
-            rd_data = '0;
+            
+            // collision_flag <= 1'b0;
         end
         else begin
             //to write data to mem at that address
             if(wr_en) begin
-                mem[wr_addr] = wr_data;
+                mem[wr_addr] <= wr_data;
             end
-            to read data from mem at that address
-            if(rd_en) begin
-                rd_data = mem[rd_addr];
-            end
+
             //exception case. But for safety, we read out first, then write in
             if(wr_en && rd_en) begin
-                rd_data = mem[rd_addr];
-                mem[wr_addr] = wr_data;
+                mem[wr_addr] <= wr_data; //written after 2 clk cycle delay
+
+                // collision_flag <= 1'b1;
+                // if(!collision_clear) begin
+                //     
+                //     collision_flag <= 1'b0;
+                // end
             end
         end
 
 
     end
+
+    //===============================================================================================
+
+
+
+
+    //===========================================GAP ON PURPOSE=========================================
+
+
+
+
+    //====================================================================================================
+    always_ff @( posedge clk or negedge rst_n ) begin : write_to_output
+        
+
+        //async reset, triiger at rst low
+        if(!rst_n) begin
+            rd_data <= '0;
+            rd_data <= mem[rd_addr];
+        end
+        else begin
+
+            //to read data from mem at that address
+            if(rd_en) begin
+                rd_data <= mem[rd_addr];
+            end
+                //exception case. But for safety, we read out first, then write in
+            if(wr_en && rd_en) begin
+                // collision_clear <= 1'b1;
+                
+                // collision_clear <= 1'b0;
+                 rd_data <= mem[rd_addr];
+            end
+        end
+
+
+    end    
 	
  
  
