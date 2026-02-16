@@ -104,9 +104,12 @@
 
             //to read data from mem at that address
             if(rd_en) begin
-                rd_data <= panic_buffer;
+                rd_data <= mem[rd_addr];
             end
-                //exception case. But for safety, we read out first, then write in
+                //exception case. But for safety, we read out first
+            if(wr_en && rd_en && data_write_command) begin
+                rd_data <= panic_buffer
+            end
 
         end
 
