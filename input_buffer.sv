@@ -16,18 +16,20 @@
 
     input  logic [ DATA_WIDTH - 1 : 0 ] wr_addr,
 
-    output logic [ DATA_WIDTH - 1 : 0 ] rd_addr,
+    output logic [ DATA_WIDTH - 1 : 0 ] rd_addr
 
  );
 
 
     always_ff @( posedge clk or negedge rst_n ) begin : control_ff
         
+
+        //async reset, triiger at rst low
         if(!rst_n) begin
             rd_addr = '0;
         end
         else begin
-            
+            //logic to be loaded
         end
 
 
