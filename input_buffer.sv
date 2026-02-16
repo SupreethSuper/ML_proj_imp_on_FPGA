@@ -1,5 +1,6 @@
- module input_buffer();
- 
+ module input_buffer(
+    input logic 
+ );
 	
  
  
