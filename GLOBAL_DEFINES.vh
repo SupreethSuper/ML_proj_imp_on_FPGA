@@ -2,8 +2,8 @@
 `define GLOBAL_DEFINES_VH
 //==================GUARD RAILS==============
 
-`define ADDR_WIDTH 32
-`define DATA_WIDTH 32
+`define ADDR_WIDTH_DEFINES 32
+`define DATA_WIDTH_DEFINES 32
 
 
 //======NO CODE BEYOND THIS POINT==================

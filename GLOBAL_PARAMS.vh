@@ -8,8 +8,8 @@
 
 //=============END OF IMPORTS=========
 
-parameter ADDR_WIDTH = `ADDR_WIDTH;
-parameter DATA_WIDTH = `DATA_WIDTH;
+parameter ADDR_WIDTH = `ADDR_WIDTH_DEFINES;
+parameter DATA_WIDTH = `DATA_WIDTH_DEFINES;
 
 
 

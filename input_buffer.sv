@@ -1,8 +1,8 @@
  `include "GLOBAL_PARAMS.vh"
  
  module input_buffer #(
-    parameter DATA_WIDTH = DATA_WIDTH,
-    parameter ADDR_WIDTH = ADDR_WIDTH
+    parameter BUFFER_DATA_WIDTH = DATA_WIDTH,
+    parameter BUFFER_ADDR_WIDTH = ADDR_WIDTH
  )(
     input logic clk,
     input logic rst_n,
@@ -10,13 +10,13 @@
     input logic rd_en,
 
     
-    input logic [ ADDR_WIDTH - 1 : 0 ] wr_addr,
-    input logic [ ADDR_WIDTH - 1 : 0 ] rd_addr,
+    input logic [ BUFFER_ADDR_WIDTH - 1 : 0 ] wr_addr,
+    input logic [ BUFFER_ADDR_WIDTH - 1 : 0 ] rd_addr,
 
 
-    input  logic [ DATA_WIDTH - 1 : 0 ] wr_addr,
+    input  logic [ BUFFER_DATA_WIDTH - 1 : 0 ] wr_data,
 
-    output logic [ DATA_WIDTH - 1 : 0 ] rd_addr
+    output logic [ BUFFER_DATA_WIDTH - 1 : 0 ] rd_data
 
  );
 
@@ -26,7 +26,7 @@
 
         //async reset, triiger at rst low
         if(!rst_n) begin
-            rd_addr = '0;
+            rd_data = '0;
         end
         else begin
             //logic to be loaded
