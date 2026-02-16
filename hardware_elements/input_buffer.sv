@@ -117,7 +117,7 @@
     end
 
 
-    always_ff @(negedge clk or posedge collision_flag) begin
+    always_ff @(negedge clk or posedge collision_flag) begin : panic_buffer_logic
         if(wr_en && rd_en) begin
 
             panic_buffer <= mem[rd_addr];
