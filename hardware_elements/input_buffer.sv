@@ -31,7 +31,6 @@
     input logic clk,
     input logic rst_n,
     input logic wr_en,
-    input logic rd_en,
 
     
     input logic [ BUFFER_ADDR_WIDTH - 1 : 0 ] wr_addr,
@@ -40,90 +39,26 @@
 
     input  logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] wr_data,
 
-    output logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] rd_data
+    output logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] rd_data,
+	 
+	
 
  );
 
-    logic signed [ 0 : BUFFER_DATA_WIDTH - 1 ] mem [ (2 * BUFFER_ADDR_WIDTH) - 1 : 0 ];
-    logic collision_flag;
-    logic data_write_command;
+    logic  [ 0 : BUFFER_DATA_WIDTH - 1 ] mem [ (2 * BUFFER_ADDR_WIDTH) - 1 : 0 ]; //memory cant be signed
+    logic rd_en;
+    assign rd_en = ~wr_en;
 
-    logic signed [ BUFFER_DATA_WIDTH - 1 : 0 ] panic_buffer;
+    always_ff @(posedge clk or negedge rst) begin
+      
+      if(!rst_n)
 
-    assign data_write_command = collision_flag;
-
-
-
-    always_ff @( posedge clk or negedge rst_n ) begin : write_to_memory
-        
-
-        //async reset, triiger at rst low
-        if(!rst_n) begin
-            
-            // collision_flag <= 1'b0;
-        end
-        else begin
-            //to write data to mem at that address
-            if(wr_en) begin
-                mem[wr_addr] <= wr_data;
-            end
-
-            //exception case. But for safety, we read out first, then write in
-            if(wr_en && rd_en) begin
-                collision_flag <= 1'b1;
-                mem[wr_addr] <= wr_data; //written after 2 clk cycle delay
-                collision_flag <= 1'b0;
-
-
-            end
-        end
-
-
-    end
-
-    //===============================================================================================
-
-
-
-
-    //===========================================GAP ON PURPOSE=========================================
-
-
-
-
-    //====================================================================================================
-    always_ff @( posedge clk or negedge rst_n ) begin : write_to_output
-        
-
-        //async reset, triiger at rst low
-        if(!rst_n) begin
-            rd_data <= '0;
-            rd_data <= mem[rd_addr];
-        end
-        else begin
-
-            //to read data from mem at that address
-            if(rd_en) begin
-                rd_data <= mem[rd_addr];
-            end
-                //exception case. But for safety, we read out first
-            if(wr_en && rd_en && data_write_command) begin
-                rd_data <= panic_buffer
-            end
-
-        end
 
 
     end
 
 
-    always_ff @(negedge clk or posedge collision_flag) begin : panic_buffer_logic
-        if(wr_en && rd_en) begin
 
-            panic_buffer <= mem[rd_addr];
-        end
-    end
-	
- 
+   
  
  endmodule
