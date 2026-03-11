@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 
@@ -7,10 +8,10 @@ class SP500Reader:
         self.data = None
 
     def load(self) -> pd.DataFrame:
-        """Read the CSV and return a DataFrame with Date and S&P 500 columns."""
+        """Read the CSV and return a DataFrame with Date and S&P500 columns."""
         self.data = pd.read_csv(
             self.filepath,
-            usecols=["Date", "S&P 500"],
+            usecols=["Date", "S&P500"],
             parse_dates=["Date"]
         )
         return self.data
@@ -24,6 +25,8 @@ class SP500Reader:
 
 # --- Quick test when running this file directly ---
 if __name__ == "__main__":
-    reader = SP500Reader(r"datasets\sp500_index.csv")  # <-- Change to your file path
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.join(base_dir, "..", "datasets", "sp500_index.csv")
+    reader = SP500Reader(csv_path)
     df = reader.get_data()
     print(df.head())
