@@ -1,2 +1,5 @@
 #ignore all documentations that are editable
 *.docx
+
+#also ignore all .cmd commands
+*.cmd
