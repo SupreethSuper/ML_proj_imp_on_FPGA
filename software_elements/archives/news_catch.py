@@ -16,8 +16,9 @@ New columns in SP500V3_news.xlsx:
 
 Usage:
   python news_catch.py
-  python news_catch.py --workers 6          # more parallel workers
-  python news_catch.py --clear-cache        # force re-fetch
+  python news_catch.py --workers 6                                  # more parallel workers
+  python news_catch.py --clear-cache                                # force re-fetch
+  python news_catch.py --start-date 01012020 --end-date 12312024    # custom date range (MMDDYYYY)
 """
 
 import os
@@ -215,8 +216,8 @@ def fetch_chunk(chunk_info, cache, cache_path):
 def main():
     parser = argparse.ArgumentParser(description="Fetch Google News headlines for SP500V3")
     script_dir = Path(__file__).resolve().parent
-    default_input = script_dir.parent / "datasets" / "SP500V3.xlsx"
-    default_output = script_dir.parent / "datasets" / "SP500V3_news.xlsx"
+    default_input = script_dir.parent.parent / "datasets" / "SP500V3_news.xlsx"
+    default_output = script_dir.parent.parent / "datasets" / "SP500V3_news.xlsx"
 
     parser.add_argument("--input", "-i", default=str(default_input))
     parser.add_argument("--output", "-o", default=str(default_output))
@@ -224,14 +225,18 @@ def main():
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS,
                         help=f"Number of parallel workers (default: {DEFAULT_WORKERS})")
     parser.add_argument("--clear-cache", action="store_true")
+    parser.add_argument("--start-date", default=None,
+                        help="Earliest date to fetch (MMDDYYYY). Default: min date in spreadsheet")
+    parser.add_argument("--end-date", default=None,
+                        help="Latest date to fetch (MMDDYYYY). Default: max date in spreadsheet")
     args = parser.parse_args()
 
     # -- Read spreadsheet --
     print(f"Reading {args.input} ...", flush=True)
     df = pd.read_excel(args.input)
     df["observation_date"] = pd.to_datetime(df["observation_date"])
-    start_date = df["observation_date"].min()
-    end_date = df["observation_date"].max()
+    start_date = datetime.strptime(args.start_date, "%m%d%Y") if args.start_date else df["observation_date"].min()
+    end_date   = datetime.strptime(args.end_date,   "%m%d%Y") if args.end_date   else df["observation_date"].max()
     print(f"  Date range : {start_date.date()} -> {end_date.date()}", flush=True)
     print(f"  Rows       : {len(df)}", flush=True)
 

@@ -1,0 +1,16 @@
+{
+  "model": "cnn",
+  "learning_rate": 0.001,
+  "batch_size": 16,
+  "seq_len": 30,
+  "units_1": 128,
+  "units_2": 64,
+  "time_sec": 5.3,
+  "accuracy": 0.4214765100671141,
+  "precision": 0.3782467532467532,
+  "recall": 0.8291814946619217,
+  "f1": 0.5195094760312151,
+  "roc_auc": 0.5229859491962204,
+  "val_loss": 0.9222744180324891,
+  "stopped_epoch": 22
+}

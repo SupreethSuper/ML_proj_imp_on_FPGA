@@ -1,0 +1,16 @@
+{
+  "model": "lstm",
+  "learning_rate": 0.001,
+  "batch_size": 64,
+  "seq_len": 60,
+  "units_1": 256,
+  "units_2": 128,
+  "time_sec": 7.9,
+  "accuracy": 0.38722826086956524,
+  "precision": 0.38239339752407153,
+  "recall": 0.9928571428571429,
+  "f1": 0.5521350546176763,
+  "roc_auc": 0.5546835839598997,
+  "val_loss": 0.8900328606598137,
+  "stopped_epoch": 51
+}
